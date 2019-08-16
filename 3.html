@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>作业3 模拟alert</title>
+    <style>
+        .modal-container {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal-mask {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background: black;
+            opacity: 0.5;
+        }
+
+        .modal-alert {
+            margin: 0 auto;
+            width: 500px;
+            opacity: 1;
+        }
+
+        .vertical-center {
+            top: 50%;
+            position: relative;
+            transform: translateY(-50%);
+        }
+
+        .modal-alert-box {
+            width: 500px;
+            padding: 20px;
+            background: rgb(255, 255, 255);
+            display: block;
+            border-radius: 5px;
+        }
+
+        .alert-line {
+            text-align: center;
+        }
+
+        .alert-line .title {
+            color: #595959;
+            font-size: 30px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: none;
+            position: relative;
+            margin: 0 0 .4em;
+            padding: 0;
+            display: block;
+            word-wrap: break-word;
+        }
+
+        .alert-line .text {
+            font-size: 18px;
+            text-align: center;
+            font-weight: 300;
+            position: relative;
+            float: none;
+            margin: 0;
+            padding: 0;
+            line-height: normal;
+            color: #545454;
+            word-wrap: break-word;
+        }
+
+        .alert-line button {
+            border: 0;
+            border-radius: 3px;
+            box-shadow: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 500;
+            margin: 15px 5px 0;
+            padding: 10px 32px;
+            background: lightskyblue;
+        }
+    </style>
+</head>
+<body>
+<input id="gua-input" type="button" value="试一试">
+<template id="DIYalert">
+    <div class="modal-container">
+        <div class="modal-mask"></div>
+        <div class="modal-alert vertical-center">
+            <!--            你的 HTML 代码放在这里面-->
+            <div class="modal-alert-box">
+                <div class="alert-line alert-title"><span class="title"></span></div>
+                <div class="alert-line alert-text"><span class="text"></div>
+                <div class="alert-line btn-line"></div>
+            </div>
+        </div>
+    </div>
+</template>
+</body>
+<script>
+const e = selector => document.querySelector(selector)
+
+const log = console.log.bind(console)
+
+class GuaAlert {
+    constructor(title, text, callback, button) {
+        this.init()
+        this.title.innerText = title || ''
+        this.text.innerText = text || ''
+        this.button.innerHTML = button || `
+        <button data-id="alert-cancel">Cancel</button>
+        <button data-id="alert-ok">OK</button>
+        `
+    }
+
+    init() {
+        this.template = e('#DIYalert').content
+        this.alertContainer = this.template.querySelector('.modal-container').cloneNode(true)
+        this.title = this.alertContainer.querySelector('.title')
+        this.text = this.alertContainer.querySelector('.text')
+        this.button = this.alertContainer.querySelector('.btn-line')
+        this.destroy()
+    }
+
+    destroy() {
+        this.alertContainer.addEventListener('click', (event) => {
+            let self = event.target
+            if (self.dataset.id === 'alert-ok') {
+                let value = this.text.value
+                log('输入了数据, ', value)
+                this.alertContainer.remove()
+            } else if (self.dataset.id === 'alert-cancel') {
+                log('用户点了 cancel 取消输入')
+                this.alertContainer.remove()
+            }
+        })
+    }
+
+    insert() {
+        let body = document.querySelector('body')
+        body.insertAdjacentElement('beforeend', this.alertContainer)
+    }
+}
+
+// const GuaPrompt = (title, callback) => {
+//     let guaAlert = new GuaAlert(title, '', callback)
+//     guaAlert.insert()
+// }
+
+const _main = () => {
+    let b = e('#gua-input')
+    b.addEventListener('click', () => {
+        // log('点击了', event.target)
+        let guaAlert = new GuaAlert('输入框', '')
+        guaAlert.insert()
+
+    })
+}
+
+_main()
+</script>
+</html>
